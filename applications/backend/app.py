@@ -14,27 +14,12 @@ def get_db_connection():
     return conn
 
 @app.route('/info')
-def get_info():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT version();')
-    db_version = cur.fetchone()[0]
-    # data = cur.execute('SELECT * FROM test;')
-    cur.close()
-    conn.close()
+def get_connection_info():
+    # Get the connection information
+    connection_info = conn.get_dsn_parameters()
 
-
-    return jsonify({
-        # "data": "all data of the database here", 
-        "DB Info": db_version,
-        "DB Connection Info": [
-            {"Name": "/rds/db/11-db-init/dbname", "Value": os.environ['DB_NAME']},
-            {"Name": "/rds/db/11-db-init/endpoint", "Value": os.environ['DB_HOST']},
-            {"Name": "/rds/db/11-db-init/identifier", "Value": "11-db-init"},
-            {"Name": "/rds/db/11-db-init/superuser/password", "Value": "********"},
-            {"Name": "/rds/db/11-db-init/superuser/username", "Value": os.environ['DB_USER']}
-        ]
-    }) 
+    # Convert the connection info to a JSON response
+    return jsonify(connection_info)
  
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
