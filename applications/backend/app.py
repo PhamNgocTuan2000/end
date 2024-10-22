@@ -31,7 +31,7 @@ def get_info():
             {"Name": "/rds/db/11-db-init/superuser/password", "Value": "********"},
             {"Name": "/rds/db/11-db-init/superuser/username", "Value": os.environ['DB_USER']}
         ]
-    })
+    }) 
  
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
