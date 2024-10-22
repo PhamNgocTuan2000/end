@@ -52,6 +52,7 @@ jobs:
           --from-literal=DB_NAME=${{ secrets.DB_NAME }} \
           --from-literal=DB_USER=${{ secrets.DB_USER }} \
           --from-literal=DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+      continue-on-error: true
 
     - name: Deploy backend
       run: kubectl apply -f applications/backend/k8s/deployment.yaml
