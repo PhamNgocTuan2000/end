@@ -40,8 +40,7 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Update kubeconfig
-      run: aws eks get-token --cluster-name ${{ env.EKS_CLUSTER_NAME }} | kubectl apply -f -
-
+      run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
     - name: Set environment variables for deployment
       run: |
         kubectl set env deployment/backend DB_HOST=${{ secrets.DB_HOST }}
