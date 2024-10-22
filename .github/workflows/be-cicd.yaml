@@ -57,7 +57,7 @@ jobs:
     - name: Deploy backend
       run: kubectl apply -f applications/backend/k8s/deployment.yaml
 
-    - name: Update image in deployment
-      run: |
-        kubectl set image deployment/backend backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        kubectl rollout status deployment/backend
+    # - name: Update image in deployment
+    #   run: |
+    #     kubectl set image deployment/backend backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    #     kubectl rollout status deployment/backend
