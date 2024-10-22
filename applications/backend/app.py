@@ -3,7 +3,7 @@ import psycopg2
 from flask import Flask, jsonify
 
 app = Flask(__name__)
-
+   
 def get_db_connection():
     conn = psycopg2.connect( 
         host=os.environ['DB_HOST'],
