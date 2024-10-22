@@ -14,7 +14,7 @@ def get_db_connection():
     return conn
 
 @app.route('/info')
-def get_connection_info(): 
+def get_connection_info():   
     # Get the connection information
     connection_info = conn.get_dsn_parameters()
 
