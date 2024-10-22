@@ -17,7 +17,7 @@ def get_db_connection():
 def get_connection_info():   
     # Get the connection information
     connection_info = conn.get_dsn_parameters()
-
+    print(connection_info)
     # Convert the connection info to a JSON response
     return jsonify(connection_info)
  
