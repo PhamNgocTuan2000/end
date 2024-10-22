@@ -9,6 +9,8 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - 'applications/frontend/**'
 
 env:
   AWS_REGION: ap-south-1
