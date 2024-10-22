@@ -22,6 +22,7 @@ def get_info():
     cur.close()
     conn.close()
 
+
     return jsonify({
         "DB Info": db_version,
         "DB Connection Info": [
