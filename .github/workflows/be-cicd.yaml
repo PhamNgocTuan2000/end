@@ -8,9 +8,9 @@ on:
       - 'applications/backend/**'
 
 env:
-  AWS_REGION: us-west-2
-  ECR_REPOSITORY: my-app-repo
-  EKS_CLUSTER_NAME: my-eks-cluster
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: hungnv-ecr-repo
+  EKS_CLUSTER_NAME: hungnv-eks-cluster
 
 jobs:
   build-and-push:

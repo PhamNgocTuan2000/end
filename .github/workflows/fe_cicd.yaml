@@ -8,8 +8,8 @@ on:
       - 'applications/frontend/**'
 
 env:
-  AWS_REGION: us-west-2
-  S3_BUCKET: my-static-website-bucket
+  AWS_REGION: ap-south-1
+  S3_BUCKET: hungnv-bucketx
 
 jobs:
   deploy:
