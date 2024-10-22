@@ -19,11 +19,13 @@ def get_info():
     cur = conn.cursor()
     cur.execute('SELECT version();')
     db_version = cur.fetchone()[0]
+    # data = cur.execute('SELECT * FROM test;')
     cur.close()
     conn.close()
 
 
     return jsonify({
+        # "data": "all data of the database here", 
         "DB Info": db_version,
         "DB Connection Info": [
             {"Name": "/rds/db/11-db-init/dbname", "Value": os.environ['DB_NAME']},
