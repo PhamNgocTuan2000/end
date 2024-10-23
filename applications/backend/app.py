@@ -1,36 +1,55 @@
-import os
-import psycopg2
 from flask import Flask, jsonify
+import boto3
+import psycopg2
+import os
 
 app = Flask(__name__)
-   
-def get_db_connection():
-    conn = psycopg2.connect( 
-        host=os.environ['DB_HOST'],
-        database=os.environ['DB_NAME'],
-        user=os.environ['DB_USER'],
-        password=os.environ['DB_PASSWORD']
+
+def get_ssm_parameters():
+    ssm = boto3.client('ssm')
+    response = ssm.get_parameters_by_path(
+        Path='/rds/db/ib-db-init',
+        Recursive=True,
+        WithDecryption=True
     )
-    return conn
+    return response['Parameters']
 
 @app.route('/info')
-def get_connection_info():   
-    # Get the connection information
-    conn = get_db_connection()
-    connection_info = conn.get_dsn_parameters()
+def get_db_info():
+    try:
+        # Connect to RDS
+        conn = psycopg2.connect(
+            dbname=os.environ.get('DB_NAME'),
+            user=os.environ.get('DB_USER'),
+            password=os.environ.get('DB_PASSWORD'),
+            host=os.environ.get('DB_HOST')
+        )
+        
+        cursor = conn.cursor()
+        cursor.execute("SELECT version();")
+        db_version = cursor.fetchone()[0]
+        
+        # Get SSM parameters
+        ssm_params = get_ssm_parameters()
+        
+        # Format the response
+        info = {
+            "data": {
+                "DB Info": db_version,
+                "DB Connection Info": [
+                    {"Name": param['Name'], "Value": param['Value']}
+                    for param in ssm_params
+                ]
+            }
+        }
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify(info)
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    # Fetch all SSM parameters
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM pg_settings")
-    ssm_info = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    connection_info['ssm_info'] = ssm_info
-    print(connection_info)
-    # Convert the connection info to a JSON response
-    return jsonify(connection_info)
-
-    
-   
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
