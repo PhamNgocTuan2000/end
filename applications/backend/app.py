@@ -37,47 +37,42 @@ def list_all_ssm_parameters(path_prefix='/'):
         print(f"Error listing parameters: {str(e)}")
         return []
 
-# def get_db_connection():
-#     # Get all parameters
-#     params = list_all_ssm_parameters()
-#     param_dict = {param['Name']: param['Value'] for param in params}
+def get_db_connection():
+    # Get all parameters
+    params = list_all_ssm_parameters()
+    param_dict = {param['Name']: param['Value'] for param in params}
     
-#     # Get database credentials from parameters
-#     db_host = param_dict.get('/rds/db/ll-db-init/endpoint', '')
-#     db_name = param_dict.get('/rds/db/ll-db-init/dbname', '')
-#     db_user = param_dict.get('/rds/db/ll-db-init/superuser/username', '')
-#     db_password = param_dict.get('/rds/db/ll-db-init/superuser/password', '')
+    # Get database credentials from parameters
+    db_host = param_dict.get('/rds/db-host', '')
+    db_name = param_dict.get('/rds/db-name', '')
+    db_user = param_dict.get('/rds/db-user', '')
+    db_password = param_dict.get('/rds/db-password', '')
 
-#     conn = psycopg2.connect(
-#         host=db_host,
-#         database=db_name,
-#         user=db_user,
-#         password=db_password
-#     )
-#     return conn
+    conn = psycopg2.connect(
+        host=db_host,
+        database=db_name,
+        user=db_user,
+        password=db_password
+    )
+    return conn
 
 @app.route('/info')
 def get_info():
     try:
-        # Get PostgreSQL version
-        # conn = get_db_connection()
-        # cur = conn.cursor()
-        # cur.execute('SELECT version();')
-        # db_version = cur.fetchone()[0]
-        # cur.close()
-        # conn.close()
-
-        # Get all SSM parameters
         all_params = list_all_ssm_parameters()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('SELECT version();')
+        db_version = cur.fetchone()[0]
+        cur.close()
+        conn.close()
 
-        # response_data = {
-        #     'data': {
-        #         'DB Info': db_version,
-        #         'DB Connection Info': all_params
-        #     }
-        # }
+        response_data = {
+                'DB Info': db_version,
+                'DB Connection Info': all_params
+            }
 
-        return jsonify(all_params)
+        return jsonify(response_data)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

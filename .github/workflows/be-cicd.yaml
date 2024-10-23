@@ -50,13 +50,10 @@ jobs:
     - name: Create Kubernetes Secret
       run: |
         kubectl create secret generic db-secrets \
-          --from-literal=DB_HOST=${{ secrets.DB_HOST }} \
-          --from-literal=DB_NAME=${{ secrets.DB_NAME }} \
-          --from-literal=DB_USER=${{ secrets.DB_USER }} \
           --from-literal=AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
           --from-literal=AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
           --from-literal=AWS_REGION="ap-south-1" \
-          --from-literal=DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          
       continue-on-error: true
 
     - name: Deploy backend
@@ -66,3 +63,10 @@ jobs:
     #   run: |
     #     kubectl set image deployment/backend backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     #     kubectl rollout status deployment/backend
+
+
+
+    # --from-literal=DB_HOST=${{ secrets.DB_HOST }} \
+          # --from-literal=DB_NAME=${{ secrets.DB_NAME }} \
+          # --from-literal=DB_USER=${{ secrets.DB_USER }} \
+          # --from-literal=DB_PASSWORD=${{ secrets.DB_PASSWORD }}
