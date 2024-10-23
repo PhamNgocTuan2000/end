@@ -20,6 +20,10 @@ def get_connection_info():
     print(connection_info)
     # Convert the connection info to a JSON response
     return jsonify(connection_info)
+
+@app.route('/test')
+def get_connection_info():   
+    return jsonify({'message': 'Hello!'})
  
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
