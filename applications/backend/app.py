@@ -17,6 +17,6 @@ def get_db_connection():
 def get_connection_info():          
     connection_info = conn.get_dsn_parameters()
     return jsonify(connection_info)
- 
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
