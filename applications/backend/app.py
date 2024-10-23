@@ -4,10 +4,7 @@ import boto3
 import psycopg2
 import json
 
-# Set AWS credentials as environment variables
-os.environ['AWS_ACCESS_KEY_ID'] = 'YOUR_ACCESS_KEY'
-os.environ['AWS_SECRET_ACCESS_KEY'] = 'YOUR_SECRET_KEY'
-os.environ['AWS_REGION'] = 'ap-northeast-1'
+
 
 app = Flask(__name__)
 
