@@ -55,8 +55,6 @@ spec:
             secretKeyRef:
               name: db-secrets
               key: AWS_REGION
-        
-
 ---
 apiVersion: v1
 kind: Service

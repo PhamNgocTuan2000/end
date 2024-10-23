@@ -4,8 +4,6 @@ import boto3
 import psycopg2
 import json
 
-
-
 app = Flask(__name__)
 
 # Create a session with credentials
@@ -15,61 +13,71 @@ session = boto3.Session(
     region_name=os.environ['AWS_REGION']
 )
 
-def get_ssm_parameter(parameter_name):
+def list_all_ssm_parameters(path_prefix='/'):
     ssm_client = session.client('ssm')
-    response = ssm_client.get_parameter(
-        Name=parameter_name,
-        WithDecryption=True
-    )
-    return response['Parameter']['Value']
+    parameters = []
+    
+    try:
+        paginator = ssm_client.get_paginator('get_parameters_by_path')
+        response_iterator = paginator.paginate(
+            Path=path_prefix,
+            Recursive=True,
+            WithDecryption=True
+        )
+        
+        for response in response_iterator:
+            for param in response['Parameters']:
+                parameters.append({
+                    'Name': param['Name'],
+                    'Value': param['Value']
+                })
+                
+        return parameters
+    except Exception as e:
+        print(f"Error listing parameters: {str(e)}")
+        return []
 
-def get_db_connection():
-    # Get database credentials from SSM
-    db_host = get_ssm_parameter('/rds/db/ll-db-init/dbname')
-    db_name = get_ssm_parameter('/rds/db/ll-db-init/identifier')
-    db_user = get_ssm_parameter('/rds/db/ll-db-init/superuser/username')
-    db_password = get_ssm_parameter('/rds/db/ll-db-init/superuser/password')
+# def get_db_connection():
+#     # Get all parameters
+#     params = list_all_ssm_parameters()
+#     param_dict = {param['Name']: param['Value'] for param in params}
+    
+#     # Get database credentials from parameters
+#     db_host = param_dict.get('/rds/db/ll-db-init/endpoint', '')
+#     db_name = param_dict.get('/rds/db/ll-db-init/dbname', '')
+#     db_user = param_dict.get('/rds/db/ll-db-init/superuser/username', '')
+#     db_password = param_dict.get('/rds/db/ll-db-init/superuser/password', '')
 
-    conn = psycopg2.connect(
-        host=db_host,
-        database=db_name,
-        user=db_user,
-        password=db_password
-    )
-    return conn
+#     conn = psycopg2.connect(
+#         host=db_host,
+#         database=db_name,
+#         user=db_user,
+#         password=db_password
+#     )
+#     return conn
 
 @app.route('/info')
 def get_info():
     try:
         # Get PostgreSQL version
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute('SELECT version();')
-        db_version = cur.fetchone()[0]
-        cur.close()
-        conn.close()
+        # conn = get_db_connection()
+        # cur = conn.cursor()
+        # cur.execute('SELECT version();')
+        # db_version = cur.fetchone()[0]
+        # cur.close()
+        # conn.close()
 
-        # Get SSM parameters
-        ssm_params = {
-            'dbname': get_ssm_parameter('/rds/db/ll-db-init/dbname'),
-            'identifier': get_ssm_parameter('/rds/db/ll-db-init/identifier'),
-            'superuser_password': get_ssm_parameter('/rds/db/ll-db-init/superuser/password'),
-            'superuser_username': get_ssm_parameter('/rds/db/ll-db-init/superuser/username')
-        }
+        # Get all SSM parameters
+        all_params = list_all_ssm_parameters()
 
-        response_data = {
-            'data': {
-                'DB Info': db_version,
-                'DB Connection Info': [
-                    {'Name': '/rds/db/ll-db-init/dbname', 'Value': ssm_params['dbname']},
-                    {'Name': '/rds/db/ll-db-init/identifier', 'Value': ssm_params['identifier']},
-                    {'Name': '/rds/db/ll-db-init/superuser/password', 'Value': ssm_params['superuser_password']},
-                    {'Name': '/rds/db/ll-db-init/superuser/username', 'Value': ssm_params['superuser_username']}
-                ]
-            }
-        }
+        # response_data = {
+        #     'data': {
+        #         'DB Info': db_version,
+        #         'DB Connection Info': all_params
+        #     }
+        # }
 
-        return jsonify(response_data)
+        return jsonify(all_params)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
