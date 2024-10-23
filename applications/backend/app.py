@@ -22,7 +22,7 @@ def get_connection_info():
     return jsonify(connection_info)
 
 @app.route('/test')
-def get_connection_info():   
+def test():   
     return jsonify({'message': 'Hello!'})
  
 if __name__ == '__main__':
