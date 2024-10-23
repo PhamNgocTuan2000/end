@@ -18,9 +18,19 @@ def get_connection_info():
     # Get the connection information
     conn = get_db_connection()
     connection_info = conn.get_dsn_parameters()
+
+    # Fetch all SSM parameters
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM pg_settings")
+    ssm_info = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    connection_info['ssm_info'] = ssm_info
     print(connection_info)
     # Convert the connection info to a JSON response
     return jsonify(connection_info)
+
+    
    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
