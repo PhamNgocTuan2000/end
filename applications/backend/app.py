@@ -36,7 +36,7 @@ def list_all_ssm_parameters(path_prefix='/'):
     except Exception as e:
         print(f"Error listing parameters: {str(e)}")
         return []
-
+  
 def get_db_connection():
     # Get all parameters
     params = list_all_ssm_parameters()
