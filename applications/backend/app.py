@@ -15,10 +15,7 @@ def get_db_connection():
 
 @app.route('/info')
 def get_connection_info():          
-    # Get the connection information
     connection_info = conn.get_dsn_parameters()
-    print(connection_info)
-    # Convert the connection info to a JSON response
     return jsonify(connection_info)
  
 if __name__ == '__main__':
