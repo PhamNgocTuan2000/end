@@ -5,8 +5,11 @@ import json
 
 app = Flask(__name__)
 
+# Specify your AWS region
+AWS_REGION = 'ap-south-1' 
+
 def get_ssm_parameter(parameter_name):
-    ssm_client = boto3.client('ssm')
+    ssm_client = boto3.client('ssm', region_name=AWS_REGION)
     response = ssm_client.get_parameter(
         Name=parameter_name,
         WithDecryption=True
