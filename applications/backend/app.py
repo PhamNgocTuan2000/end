@@ -49,7 +49,7 @@ def get_db_connection():
     db_password = param_dict.get('/rds/db-password', '')
 
     conn = psycopg2.connect(
-        host=db_host,
+        host=db_host.split(':')[0],
         database=db_name,
         user=db_user,
         password=db_password
