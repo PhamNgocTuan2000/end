@@ -1,15 +1,25 @@
+import os
 from flask import Flask, jsonify
 import boto3
 import psycopg2
 import json
 
+# Set AWS credentials as environment variables
+os.environ['AWS_ACCESS_KEY_ID'] = 'YOUR_ACCESS_KEY'
+os.environ['AWS_SECRET_ACCESS_KEY'] = 'YOUR_SECRET_KEY'
+os.environ['AWS_REGION'] = 'ap-northeast-1'
+
 app = Flask(__name__)
 
-# Specify your AWS region
-AWS_REGION = 'ap-south-1' 
+# Create a session with credentials
+session = boto3.Session(
+    aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
+    aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'],
+    region_name=os.environ['AWS_REGION']
+)
 
 def get_ssm_parameter(parameter_name):
-    ssm_client = boto3.client('ssm', region_name=AWS_REGION)
+    ssm_client = session.client('ssm')
     response = ssm_client.get_parameter(
         Name=parameter_name,
         WithDecryption=True
