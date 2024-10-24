@@ -57,7 +57,10 @@ jobs:
       continue-on-error: true
 
     - name: Deploy backend
-      run: kubectl apply -f applications/backend/k8s/deployment.yaml
+      run: | 
+        kubectl delete deployment backend
+        kubectl apply -f applications/backend/k8s/deployment.yaml
+
 
     # - name: Update image in deployment
     #   run: |
