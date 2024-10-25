@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "hungnv-state"
+    bucket = "ptuan-state"
     key = "tfstate"
-    region = "ap-south-1"
+    region = "ap-northeast-1"
   }
 }

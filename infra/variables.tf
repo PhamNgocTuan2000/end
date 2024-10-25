@@ -1,5 +1,5 @@
 variable "vpc_name" {
-  default = "hungnv-tf-vpc"
+  default = "ptuan-tf-vpc"
 }
 variable "cidrvpc" {
   default = "10.0.0.0/16"
@@ -8,8 +8,8 @@ variable "cidrvpc" {
 variable "tags" {
   default = {
 
-    Name  = "hungnv-tf-vpc"
-    Owner = "hungnv"
+    Name  = "ptuan-tf-vpc"
+    Owner = "ptuan"
   }
 }
 

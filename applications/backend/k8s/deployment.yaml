@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  labels: 
+  labels:
     app: backend
 spec:
   replicas: 2
@@ -26,10 +26,10 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: backend
-        image: 084375555299.dkr.ecr.ap-south-1.amazonaws.com/hungnv-ecr-repo:latest
+        image: 084375555299.dkr.ecr.ap-northeast-1.amazonaws.com/ptuan:latest
         ports:
         - containerPort: 5000
-        
+
         env:
         # - name: DB_HOST
         #   valueFrom:
@@ -73,8 +73,8 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "250m"
-            
-        
+
+
 ---
 apiVersion: v1
 kind: Service
@@ -84,7 +84,7 @@ spec:
   selector:
     app: backend
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5000
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
   type: LoadBalancer

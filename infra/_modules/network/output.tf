@@ -1,5 +1,5 @@
 output "vpc_id" {
-  value = aws_vpc.hungnv-vpc.id
+  value = aws_vpc.ptuan-vpc.id
 }
 
 //export the public subnet id

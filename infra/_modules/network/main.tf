@@ -5,7 +5,7 @@ locals {
 }
 
 //create VPC
-resource "aws_vpc" "hungnv-vpc" {
+resource "aws_vpc" "ptuan-vpc" {
   cidr_block = var.cidrvpc
 
   tags = var.tags
@@ -15,11 +15,11 @@ resource "aws_vpc" "hungnv-vpc" {
 
 //Create public subnet
 resource "aws_subnet" "public" {
-  vpc_id            = aws_vpc.hungnv-vpc.id
+  vpc_id            = aws_vpc.ptuan-vpc.id
   availability_zone = var.aznames[count.index]
   count             = local.azs
   map_public_ip_on_launch = true
-  cidr_block        = cidrsubnet(aws_vpc.hungnv-vpc.cidr_block, 8, count.index)
+  cidr_block        = cidrsubnet(aws_vpc.ptuan-vpc.cidr_block, 8, count.index)
   tags = merge({
     "ext-name" = "${var.vpc_name}-public-subnet"
   }, var.tags)
@@ -28,14 +28,14 @@ resource "aws_subnet" "public" {
 
 //create internet gateway
 resource "aws_internet_gateway" "main-igw" {
-  vpc_id = aws_vpc.hungnv-vpc.id
+  vpc_id = aws_vpc.ptuan-vpc.id
   tags = merge({
     Name = "${var.vpc_name}-igw"
   }, var.tags)
 }
 
 resource "aws_route" "main_route" {
-  route_table_id         = aws_vpc.hungnv-vpc.main_route_table_id
+  route_table_id         = aws_vpc.ptuan-vpc.main_route_table_id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.main-igw.id
 }
@@ -44,7 +44,7 @@ resource "aws_route" "main_route" {
 resource "aws_route_table_association" "public_subnet_rtb" {
   count          = local.azs
   subnet_id      = element(aws_subnet.public.*.id, count.index)
-  route_table_id = aws_vpc.hungnv-vpc.main_route_table_id
+  route_table_id = aws_vpc.ptuan-vpc.main_route_table_id
 }
 
 //create eip 
@@ -67,10 +67,10 @@ resource "aws_nat_gateway" "nat" {
 
 //create private subnet
 resource "aws_subnet" "private" {
-  vpc_id            = aws_vpc.hungnv-vpc.id
+  vpc_id            = aws_vpc.ptuan-vpc.id
   availability_zone = var.aznames[count.index]
   count             = local.azs
-  cidr_block        = cidrsubnet(aws_vpc.hungnv-vpc.cidr_block, 8, count.index + local.azs)
+  cidr_block        = cidrsubnet(aws_vpc.ptuan-vpc.cidr_block, 8, count.index + local.azs)
   map_public_ip_on_launch = true
   tags = merge({
     "ext-name" = "${var.vpc_name}-private-subnet"
@@ -82,7 +82,7 @@ resource "aws_subnet" "private" {
 //create route table for private subnet
 resource "aws_route_table" "private_rtb" {
   count  = local.azs
-  vpc_id = aws_vpc.hungnv-vpc.id
+  vpc_id = aws_vpc.ptuan-vpc.id
 
   #define route table for private subnet
   route {

@@ -11,5 +11,5 @@ terraform {
 provider "aws" {
   # Configuration options
   # profile = "default"
-  region  = "ap-south-1"
+  region  = "ap-northeast-1"
 }
